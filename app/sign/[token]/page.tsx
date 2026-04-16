@@ -49,7 +49,6 @@ function SignatureCanvas({
     if (!canvas) return;
     const ctx = canvas.getContext('2d')!;
 
-    // Retina / device pixel ratio
     const dpr = window.devicePixelRatio || 1;
     const displayW = canvas.offsetWidth;
     const displayH = canvas.offsetHeight;
@@ -57,7 +56,7 @@ function SignatureCanvas({
     canvas.height = displayH * dpr;
     ctx.scale(dpr, dpr);
 
-    ctx.strokeStyle = '#1e293b';
+    ctx.strokeStyle = '#818cf8';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -117,7 +116,7 @@ function SignatureCanvas({
         style={sigStyles.canvas}
         aria-label="Signature pad"
       />
-      <div style={sigStyles.hint}>Sign above with your mouse or finger</div>
+      <div style={sigStyles.hint}>Draw your signature above</div>
       <button type="button" onClick={clear} style={sigStyles.clearBtn}>
         Clear
       </button>
@@ -128,9 +127,9 @@ function SignatureCanvas({
 const sigStyles: Record<string, React.CSSProperties> = {
   wrapper: {
     position: 'relative',
-    border: '1.5px solid #d1d5db',
+    border: '1.5px solid rgba(79,110,247,0.3)',
     borderRadius: '14px',
-    background: '#fafafa',
+    background: 'rgba(79,110,247,0.04)',
     overflow: 'hidden',
   },
   canvas: {
@@ -142,26 +141,29 @@ const sigStyles: Record<string, React.CSSProperties> = {
   },
   hint: {
     position: 'absolute',
-    bottom: '36px',
+    bottom: '38px',
     left: 0,
     right: 0,
     textAlign: 'center',
     fontSize: '12px',
-    color: '#9ca3af',
+    color: 'rgba(148,163,184,0.5)',
     pointerEvents: 'none',
     userSelect: 'none',
+    letterSpacing: '0.02em',
   },
   clearBtn: {
     position: 'absolute',
     top: '10px',
     right: '12px',
-    background: 'none',
-    border: '1px solid #d1d5db',
+    background: 'rgba(255,255,255,0.06)',
+    border: '1px solid rgba(255,255,255,0.1)',
     borderRadius: '8px',
     padding: '4px 12px',
-    fontSize: '13px',
-    color: '#6b7280',
+    fontSize: '12px',
+    color: '#64748b',
     cursor: 'pointer',
+    fontWeight: 500,
+    letterSpacing: '0.02em',
   },
 };
 
@@ -186,14 +188,11 @@ export default function SignPage({
       try {
         setLoading(true);
         setError('');
-
         const res = await fetch(`${API_BASE_URL}/api/sign/${token}`);
         const json = await res.json().catch(() => null);
-
         if (!res.ok) {
           throw new Error(json?.message || 'Failed to load signing page');
         }
-
         setData(json);
       } catch (err: any) {
         setError(err.message || 'Something went wrong');
@@ -201,7 +200,6 @@ export default function SignPage({
         setLoading(false);
       }
     };
-
     loadContract();
   }, [token]);
 
@@ -217,11 +215,9 @@ export default function SignPage({
       setError('Please draw your signature in the box above.');
       return;
     }
-
     try {
       setSubmitting(true);
       setError('');
-
       const res = await fetch(`${API_BASE_URL}/api/sign/${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -230,13 +226,10 @@ export default function SignPage({
           signature: signatureDataUrl,
         }),
       });
-
       const json = await res.json().catch(() => null);
-
       if (!res.ok) {
         throw new Error(json?.message || 'Failed to sign contract');
       }
-
       setSuccess(true);
     } catch (err: any) {
       setError(err.message || 'Failed to sign contract');
@@ -249,22 +242,26 @@ export default function SignPage({
   if (loading) {
     return (
       <main style={styles.page}>
-        <div style={{ ...styles.card, textAlign: 'center', color: '#6b7280' }}>
+        <div style={{ ...styles.card, textAlign: 'center', padding: '60px 40px' }}>
           <div style={styles.spinner} />
-          Loading contract…
+          <p style={{ color: '#475569', fontSize: '14px', margin: 0, letterSpacing: '0.02em' }}>
+            Loading contract…
+          </p>
         </div>
       </main>
     );
   }
 
-  // ── Error (no contract loaded) ───────────────────────────────────────────
+  // ── Error ────────────────────────────────────────────────────────────────
   if (error && !contract) {
     return (
       <main style={styles.page}>
         <div style={styles.card}>
-          <div style={styles.badge('#fee2e2', '#991b1b')}>Error</div>
+          <div style={styles.badge('rgba(239,68,68,0.12)', 'rgba(239,68,68,0.3)', '#fca5a5')}>
+            Error
+          </div>
           <h1 style={styles.title}>Unable to load contract</h1>
-          <p style={styles.errorText}>{error}</p>
+          <p style={{ color: '#ef4444', fontSize: '15px', margin: 0, lineHeight: 1.6 }}>{error}</p>
         </div>
       </main>
     );
@@ -274,11 +271,24 @@ export default function SignPage({
   if (success) {
     return (
       <main style={styles.page}>
-        <div style={styles.card}>
-          <div style={styles.successIcon}>✓</div>
-          <h1 style={styles.title}>Contract Signed</h1>
-          <p style={styles.text}>
-            Your signature has been recorded and the contract is now complete.
+        <div style={{ ...styles.card, textAlign: 'center', padding: '60px 40px' }}>
+          <div style={styles.successIcon}>
+            <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+              <path
+                stroke="#4ade80"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+          <h1 style={{ ...styles.title, textAlign: 'center', marginBottom: '12px' }}>
+            Contract Signed
+          </h1>
+          <p style={{ color: '#64748b', fontSize: '15px', lineHeight: 1.7, margin: 0, maxWidth: '340px', marginLeft: 'auto', marginRight: 'auto' }}>
+            Your signature has been recorded and the contract is now legally
+            complete.
           </p>
         </div>
       </main>
@@ -288,11 +298,22 @@ export default function SignPage({
   // ── Main form ────────────────────────────────────────────────────────────
   return (
     <main style={styles.page}>
+      {/* Glow blobs */}
+      <div style={styles.glowTop} />
+      <div style={styles.glowBottom} />
+
       <div style={styles.card}>
+        {/* Wordmark */}
+        <div style={styles.wordmark}>
+          <div style={styles.logoMark}>✦</div>
+          <span style={styles.logoText}>ContractAI</span>
+        </div>
 
         {/* Header */}
         <div style={styles.header}>
-          <div style={styles.badge('#ede9fe', '#5b21b6')}>Signature Required</div>
+          <div style={styles.badge('rgba(124,58,237,0.12)', 'rgba(124,58,237,0.35)', '#a78bfa')}>
+            Signature Required
+          </div>
           <h1 style={styles.title}>{contract?.title || 'Review & Sign Contract'}</h1>
           <p style={styles.text}>
             Review the details below, then add your typed name and drawn
@@ -300,20 +321,43 @@ export default function SignPage({
           </p>
         </div>
 
-        <hr style={styles.divider} />
+        <div style={styles.divider} />
 
         {/* Contract meta */}
         <div style={styles.metaGrid}>
-          <div style={styles.metaItem}>
-            <span style={styles.metaLabel}>Other Party</span>
-            <span style={styles.metaValue}>
-              {contract?.otherPartyName || contract?.otherPartyEmail || '—'}
-            </span>
-          </div>
+          {(contract?.otherPartyName || contract?.otherPartyEmail) && (
+            <div style={styles.metaItem}>
+              <span style={styles.metaLabel}>Other Party</span>
+              <span style={styles.metaValue}>
+                {contract?.otherPartyName || contract?.otherPartyEmail}
+              </span>
+            </div>
+          )}
           {contract?.type && (
             <div style={styles.metaItem}>
               <span style={styles.metaLabel}>Contract Type</span>
               <span style={styles.metaValue}>{contract.type}</span>
+            </div>
+          )}
+          {contract?.status && (
+            <div style={styles.metaItem}>
+              <span style={styles.metaLabel}>Status</span>
+              <span style={{
+                ...styles.metaValue,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}>
+                <span style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: '#7c3aed',
+                  boxShadow: '0 0 6px #7c3aed',
+                  display: 'inline-block',
+                }} />
+                {contract.status}
+              </span>
             </div>
           )}
         </div>
@@ -328,7 +372,7 @@ export default function SignPage({
           </div>
         )}
 
-        <hr style={styles.divider} />
+        <div style={styles.divider} />
 
         {/* Typed name */}
         <div style={styles.section}>
@@ -365,7 +409,12 @@ export default function SignPage({
             <img
               src={signatureDataUrl}
               alt="Your signature"
-              style={{ maxHeight: '60px', display: 'block', marginTop: '6px' }}
+              style={{
+                maxHeight: '60px',
+                display: 'block',
+                marginTop: '8px',
+                filter: 'brightness(2) hue-rotate(240deg)',
+              }}
             />
           </div>
         )}
@@ -377,13 +426,20 @@ export default function SignPage({
         <button
           style={{
             ...styles.button,
-            opacity: submitting ? 0.7 : 1,
+            opacity: submitting ? 0.65 : 1,
             cursor: submitting ? 'not-allowed' : 'pointer',
           }}
           onClick={handleSubmit}
           disabled={submitting}
         >
-          {submitting ? 'Submitting…' : 'Sign Contract'}
+          {submitting ? (
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+              <span style={styles.btnSpinner} />
+              Submitting…
+            </span>
+          ) : (
+            'Sign Contract'
+          )}
         </button>
 
         <p style={styles.legalNote}>
@@ -400,176 +456,274 @@ export default function SignPage({
 const styles: Record<string, any> = {
   page: {
     minHeight: '100vh',
-    background: 'linear-gradient(135deg, #f0f4ff 0%, #f6f7fb 100%)',
+    background: '#060b18',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    padding: '40px 20px',
+    padding: '40px 20px 80px',
+    position: 'relative',
+    overflow: 'hidden',
   } as React.CSSProperties,
+
+  glowTop: {
+    position: 'fixed',
+    top: '-15%',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '900px',
+    height: '600px',
+    background:
+      'radial-gradient(ellipse at center, rgba(79,110,247,0.13) 0%, transparent 70%)',
+    pointerEvents: 'none',
+    zIndex: 0,
+  } as React.CSSProperties,
+
+  glowBottom: {
+    position: 'fixed',
+    bottom: '-20%',
+    right: '10%',
+    width: '500px',
+    height: '500px',
+    background:
+      'radial-gradient(ellipse at center, rgba(124,58,237,0.06) 0%, transparent 70%)',
+    pointerEvents: 'none',
+    zIndex: 0,
+  } as React.CSSProperties,
+
   card: {
+    position: 'relative',
+    zIndex: 1,
     width: '100%',
-    maxWidth: '720px',
-    background: '#ffffff',
+    maxWidth: '680px',
+    background: 'rgba(255,255,255,0.035)',
+    backdropFilter: 'blur(28px)',
+    WebkitBackdropFilter: 'blur(28px)',
     borderRadius: '24px',
-    boxShadow: '0 12px 40px rgba(0,0,0,0.10)',
-    padding: '36px 32px',
+    border: '1px solid rgba(255,255,255,0.08)',
+    boxShadow:
+      '0 0 0 1px rgba(79,110,247,0.05), 0 28px 72px rgba(0,0,0,0.65), 0 8px 24px rgba(0,0,0,0.4)',
+    padding: '40px 36px',
+    animation: 'fadeUp 0.5s ease both',
   } as React.CSSProperties,
+
+  wordmark: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginBottom: '32px',
+  } as React.CSSProperties,
+
+  logoMark: {
+    width: '28px',
+    height: '28px',
+    borderRadius: '8px',
+    background: 'linear-gradient(135deg, #4f6ef7, #7c3aed)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '13px',
+    boxShadow: '0 2px 12px rgba(79,110,247,0.45)',
+  } as React.CSSProperties,
+
+  logoText: {
+    fontSize: '15px',
+    fontWeight: 700,
+    color: '#e2e8f0',
+    letterSpacing: '-0.01em',
+  } as React.CSSProperties,
+
   header: {
-    marginBottom: '20px',
+    marginBottom: '24px',
   } as React.CSSProperties,
-  badge: (bg: string, color: string): React.CSSProperties => ({
-    display: 'inline-block',
+
+  badge: (bg: string, border: string, color: string): React.CSSProperties => ({
+    display: 'inline-flex',
+    alignItems: 'center',
     background: bg,
+    border: `1px solid ${border}`,
     color,
-    fontSize: '12px',
-    fontWeight: 600,
+    fontSize: '11px',
+    fontWeight: 700,
     borderRadius: '99px',
     padding: '4px 12px',
-    marginBottom: '12px',
-    letterSpacing: '0.04em',
+    marginBottom: '14px',
+    letterSpacing: '0.07em',
     textTransform: 'uppercase',
   }),
+
   title: {
-    fontSize: '28px',
+    fontSize: '26px',
     fontWeight: 700,
-    color: '#111827',
-    margin: '0 0 8px',
+    color: '#f1f5f9',
+    margin: '0 0 10px',
+    letterSpacing: '-0.02em',
+    lineHeight: 1.2,
   } as React.CSSProperties,
+
   text: {
-    color: '#6b7280',
-    fontSize: '15px',
-    lineHeight: 1.6,
+    color: '#475569',
+    fontSize: '14px',
+    lineHeight: 1.7,
     margin: 0,
   } as React.CSSProperties,
+
   divider: {
     border: 'none',
-    borderTop: '1px solid #f3f4f6',
-    margin: '24px 0',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
+    margin: '28px 0',
   } as React.CSSProperties,
+
   metaGrid: {
     display: 'flex',
     gap: '32px',
     flexWrap: 'wrap',
     marginBottom: '24px',
   } as React.CSSProperties,
+
   metaItem: {
     display: 'flex',
     flexDirection: 'column',
     gap: '4px',
   } as React.CSSProperties,
+
   metaLabel: {
-    fontSize: '11px',
-    fontWeight: 600,
-    color: '#9ca3af',
+    fontSize: '10px',
+    fontWeight: 700,
+    color: '#334155',
     textTransform: 'uppercase',
-    letterSpacing: '0.06em',
+    letterSpacing: '0.08em',
   } as React.CSSProperties,
+
   metaValue: {
-    fontSize: '15px',
+    fontSize: '14px',
     fontWeight: 500,
-    color: '#111827',
+    color: '#cbd5e1',
   } as React.CSSProperties,
+
   section: {
     marginBottom: '24px',
   } as React.CSSProperties,
+
   sectionLabel: {
     display: 'block',
-    fontSize: '14px',
+    fontSize: '13px',
     fontWeight: 600,
-    color: '#374151',
-    marginBottom: '8px',
+    color: '#94a3b8',
+    marginBottom: '10px',
+    letterSpacing: '0.01em',
   } as React.CSSProperties,
+
   pre: {
-    background: '#f9fafb',
-    border: '1px solid #e5e7eb',
+    background: 'rgba(255,255,255,0.025)',
+    border: '1px solid rgba(255,255,255,0.07)',
     padding: '16px',
     borderRadius: '12px',
-    fontSize: '13px',
+    fontSize: '12.5px',
     overflow: 'auto',
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
-    color: '#374151',
-    lineHeight: 1.6,
+    color: '#64748b',
+    lineHeight: 1.7,
     margin: 0,
+    fontFamily: 'var(--font-geist-mono), monospace',
   } as React.CSSProperties,
+
   input: {
     width: '100%',
     padding: '13px 16px',
-    fontSize: '16px',
+    fontSize: '15px',
     borderRadius: '12px',
-    border: '1.5px solid #d1d5db',
+    border: '1.5px solid rgba(255,255,255,0.08)',
+    background: 'rgba(255,255,255,0.04)',
     outline: 'none',
-    color: '#111827',
+    color: '#f1f5f9',
     boxSizing: 'border-box',
     fontFamily: 'inherit',
-    transition: 'border-color 0.15s',
+    transition: 'border-color 0.15s, box-shadow 0.15s',
   } as React.CSSProperties,
+
   hint: {
     fontSize: '12px',
-    color: '#9ca3af',
+    color: '#334155',
     marginTop: '6px',
+    lineHeight: 1.5,
   } as React.CSSProperties,
+
   sigPreview: {
     marginBottom: '20px',
-    padding: '12px 16px',
-    background: '#f9fafb',
+    padding: '14px 16px',
+    background: 'rgba(79,110,247,0.06)',
     borderRadius: '12px',
-    border: '1px solid #e5e7eb',
+    border: '1px solid rgba(79,110,247,0.18)',
   } as React.CSSProperties,
+
   errorBanner: {
-    background: '#fef2f2',
-    border: '1px solid #fecaca',
-    color: '#dc2626',
+    background: 'rgba(239,68,68,0.08)',
+    border: '1px solid rgba(239,68,68,0.25)',
+    color: '#fca5a5',
     borderRadius: '10px',
     padding: '12px 16px',
-    fontSize: '14px',
+    fontSize: '13px',
     marginBottom: '16px',
+    lineHeight: 1.5,
   } as React.CSSProperties,
-  errorText: {
-    color: '#dc2626',
-    fontSize: '15px',
-  } as React.CSSProperties,
+
   button: {
     width: '100%',
     border: 'none',
     borderRadius: '14px',
-    background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+    background: 'linear-gradient(135deg, #4f6ef7, #7c3aed)',
     color: '#ffffff',
-    fontSize: '16px',
+    fontSize: '15px',
     fontWeight: 700,
     padding: '15px 20px',
     display: 'block',
     textAlign: 'center',
-    boxShadow: '0 4px 14px rgba(79,70,229,0.35)',
-    marginBottom: '14px',
+    boxShadow: '0 4px 20px rgba(79,110,247,0.42)',
+    marginBottom: '16px',
+    letterSpacing: '0.01em',
+    transition: 'opacity 0.15s, box-shadow 0.15s',
   } as React.CSSProperties,
+
   legalNote: {
     fontSize: '11px',
-    color: '#9ca3af',
+    color: '#1e293b',
     textAlign: 'center',
-    lineHeight: 1.6,
+    lineHeight: 1.7,
     margin: 0,
   } as React.CSSProperties,
+
   spinner: {
-    width: '32px',
-    height: '32px',
-    border: '3px solid #e5e7eb',
-    borderTopColor: '#6366f1',
+    width: '36px',
+    height: '36px',
+    border: '3px solid rgba(79,110,247,0.15)',
+    borderTopColor: '#4f6ef7',
     borderRadius: '50%',
-    animation: 'spin 0.8s linear infinite',
-    margin: '0 auto 16px',
+    animation: 'spin 0.75s linear infinite',
+    margin: '0 auto 20px',
   } as React.CSSProperties,
+
+  btnSpinner: {
+    width: '16px',
+    height: '16px',
+    border: '2px solid rgba(255,255,255,0.25)',
+    borderTopColor: '#fff',
+    borderRadius: '50%',
+    animation: 'spin 0.65s linear infinite',
+    display: 'inline-block',
+    flexShrink: 0,
+  } as React.CSSProperties,
+
   successIcon: {
-    width: '64px',
-    height: '64px',
-    background: '#dcfce7',
-    color: '#16a34a',
+    width: '72px',
+    height: '72px',
+    background: 'rgba(74,222,128,0.1)',
+    border: '1px solid rgba(74,222,128,0.2)',
     borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '28px',
-    fontWeight: 700,
-    margin: '0 auto 20px',
+    margin: '0 auto 24px',
+    boxShadow: '0 0 32px rgba(74,222,128,0.12)',
   } as React.CSSProperties,
 };
