@@ -2,23 +2,31 @@
 
 import { useEffect, useRef, useState, use } from 'react';
 
-type ContractResponse = {
-  contract?: {
-    id: string;
-    title?: string;
-    type?: string;
-    status?: string;
-    extractedFields?: any;
-    otherPartyName?: string | null;
-    otherPartyEmail?: string | null;
-    signingLinkExpiry?: string | null;
-  };
-  id?: string;
+type ExtractedField = {
+  label: string;
+  key: string;
+  value: string;
+};
+
+type ContractData = {
+  id: string;
   title?: string;
-  extractedFields?: any;
+  type?: string;
+  status?: string;
+  extractedFields?: ExtractedField[];
+  pdfUrl?: string | null;
   otherPartyName?: string | null;
   otherPartyEmail?: string | null;
+  signingLinkExpiry?: string | null;
+  parties?: { sender?: string | null; recipient?: string | null };
+  senderSigned?: boolean;
 };
+
+type ContractResponse = {
+  success?: boolean;
+  data?: ContractData;
+  contract?: ContractData;
+} & Partial<ContractData>;
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
@@ -203,8 +211,8 @@ export default function SignPage({
     loadContract();
   }, [token]);
 
-  const contract = data?.contract ?? data;
-  const extractedFields = contract?.extractedFields ?? {};
+  const contract: ContractData | null = data?.data ?? data?.contract ?? (data?.id ? (data as ContractData) : null);
+  const extractedFields: ExtractedField[] = Array.isArray(contract?.extractedFields) ? contract.extractedFields : [];
 
   const handleSubmit = async () => {
     if (!typedName.trim()) {
@@ -325,9 +333,15 @@ export default function SignPage({
 
         {/* Contract meta */}
         <div style={styles.metaGrid}>
+          {contract?.parties?.sender && (
+            <div style={styles.metaItem}>
+              <span style={styles.metaLabel}>Sender</span>
+              <span style={styles.metaValue}>{contract.parties.sender}</span>
+            </div>
+          )}
           {(contract?.otherPartyName || contract?.otherPartyEmail) && (
             <div style={styles.metaItem}>
-              <span style={styles.metaLabel}>Other Party</span>
+              <span style={styles.metaLabel}>Recipient</span>
               <span style={styles.metaValue}>
                 {contract?.otherPartyName || contract?.otherPartyEmail}
               </span>
@@ -336,7 +350,9 @@ export default function SignPage({
           {contract?.type && (
             <div style={styles.metaItem}>
               <span style={styles.metaLabel}>Contract Type</span>
-              <span style={styles.metaValue}>{contract.type}</span>
+              <span style={styles.metaValue}>
+                {contract.type.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+              </span>
             </div>
           )}
           {contract?.status && (
@@ -362,13 +378,32 @@ export default function SignPage({
           )}
         </div>
 
+        {/* PDF Preview */}
+        {contract?.pdfUrl && (
+          <div style={styles.section}>
+            <div style={styles.sectionLabel}>Contract Document</div>
+            <div style={styles.pdfContainer}>
+              <iframe
+                src={contract.pdfUrl}
+                style={styles.pdfFrame}
+                title="Contract Document"
+              />
+            </div>
+          </div>
+        )}
+
         {/* Extracted fields */}
-        {Object.keys(extractedFields).length > 0 && (
+        {!contract?.pdfUrl && extractedFields.length > 0 && (
           <div style={styles.section}>
             <div style={styles.sectionLabel}>Contract Details</div>
-            <pre style={styles.pre}>
-              {JSON.stringify(extractedFields, null, 2)}
-            </pre>
+            <div style={styles.fieldsList}>
+              {extractedFields.map((field) => (
+                <div key={field.key} style={styles.fieldRow}>
+                  <span style={styles.fieldLabel}>{field.label}</span>
+                  <span style={styles.fieldValue}>{field.value || '—'}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -613,19 +648,55 @@ const styles: Record<string, any> = {
     letterSpacing: '0.01em',
   } as React.CSSProperties,
 
-  pre: {
-    background: 'rgba(255,255,255,0.025)',
-    border: '1px solid rgba(255,255,255,0.07)',
-    padding: '16px',
+  pdfContainer: {
     borderRadius: '12px',
-    fontSize: '12.5px',
-    overflow: 'auto',
-    whiteSpace: 'pre-wrap',
-    wordBreak: 'break-word',
-    color: '#64748b',
-    lineHeight: 1.7,
-    margin: 0,
-    fontFamily: 'var(--font-geist-mono), monospace',
+    overflow: 'hidden',
+    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'rgba(0,0,0,0.3)',
+  } as React.CSSProperties,
+
+  pdfFrame: {
+    display: 'block',
+    width: '100%',
+    height: '480px',
+    border: 'none',
+  } as React.CSSProperties,
+
+  fieldsList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0',
+    borderRadius: '12px',
+    overflow: 'hidden',
+    border: '1px solid rgba(255,255,255,0.07)',
+  } as React.CSSProperties,
+
+  fieldRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: '16px',
+    padding: '12px 16px',
+    background: 'rgba(255,255,255,0.02)',
+    borderBottom: '1px solid rgba(255,255,255,0.04)',
+  } as React.CSSProperties,
+
+  fieldLabel: {
+    fontSize: '12px',
+    fontWeight: 600,
+    color: '#475569',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.06em',
+    flexShrink: 0,
+    paddingTop: '1px',
+  } as React.CSSProperties,
+
+  fieldValue: {
+    fontSize: '14px',
+    color: '#cbd5e1',
+    textAlign: 'right' as const,
+    lineHeight: 1.5,
+    wordBreak: 'break-word' as const,
   } as React.CSSProperties,
 
   input: {
