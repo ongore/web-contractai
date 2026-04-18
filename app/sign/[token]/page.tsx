@@ -64,7 +64,7 @@ function SignatureCanvas({
     canvas.height = displayH * dpr;
     ctx.scale(dpr, dpr);
 
-    ctx.strokeStyle = '#818cf8';
+    ctx.strokeStyle = '#1a1a1a';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -135,9 +135,9 @@ function SignatureCanvas({
 const sigStyles: Record<string, React.CSSProperties> = {
   wrapper: {
     position: 'relative',
-    border: '1.5px solid rgba(79,110,247,0.3)',
+    border: '1.5px solid rgba(255,92,40,0.35)',
     borderRadius: '14px',
-    background: 'rgba(79,110,247,0.04)',
+    background: '#ffffff',
     overflow: 'hidden',
   },
   canvas: {
@@ -146,6 +146,7 @@ const sigStyles: Record<string, React.CSSProperties> = {
     height: '180px',
     cursor: 'crosshair',
     touchAction: 'none',
+    background: '#ffffff',
   },
   hint: {
     position: 'absolute',
@@ -154,7 +155,7 @@ const sigStyles: Record<string, React.CSSProperties> = {
     right: 0,
     textAlign: 'center',
     fontSize: '12px',
-    color: 'rgba(148,163,184,0.5)',
+    color: 'rgba(140,140,140,0.6)',
     pointerEvents: 'none',
     userSelect: 'none',
     letterSpacing: '0.02em',
@@ -163,12 +164,12 @@ const sigStyles: Record<string, React.CSSProperties> = {
     position: 'absolute',
     top: '10px',
     right: '12px',
-    background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    background: '#F7F5F2',
+    border: '1px solid #E2DED8',
     borderRadius: '8px',
     padding: '4px 12px',
     fontSize: '12px',
-    color: '#64748b',
+    color: '#8C8C8C',
     cursor: 'pointer',
     fontWeight: 500,
     letterSpacing: '0.02em',
@@ -252,7 +253,7 @@ export default function SignPage({
       <main style={styles.page}>
         <div style={{ ...styles.card, textAlign: 'center', padding: '60px 40px' }}>
           <div style={styles.spinner} />
-          <p style={{ color: '#475569', fontSize: '14px', margin: 0, letterSpacing: '0.02em' }}>
+          <p style={{ color: '#8C8C8C', fontSize: '14px', margin: 0, letterSpacing: '0.02em' }}>
             Loading contract…
           </p>
         </div>
@@ -265,7 +266,7 @@ export default function SignPage({
     return (
       <main style={styles.page}>
         <div style={styles.card}>
-          <div style={styles.badge('rgba(239,68,68,0.12)', 'rgba(239,68,68,0.3)', '#fca5a5')}>
+          <div style={styles.badge('rgba(239,68,68,0.08)', 'rgba(239,68,68,0.25)', '#ef4444')}>
             Error
           </div>
           <h1 style={styles.title}>Unable to load contract</h1>
@@ -283,7 +284,7 @@ export default function SignPage({
           <div style={styles.successIcon}>
             <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
               <path
-                stroke="#4ade80"
+                stroke="#10b981"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -294,7 +295,7 @@ export default function SignPage({
           <h1 style={{ ...styles.title, textAlign: 'center', marginBottom: '12px' }}>
             Contract Signed
           </h1>
-          <p style={{ color: '#64748b', fontSize: '15px', lineHeight: 1.7, margin: 0, maxWidth: '340px', marginLeft: 'auto', marginRight: 'auto' }}>
+          <p style={{ color: '#8C8C8C', fontSize: '15px', lineHeight: 1.7, margin: 0, maxWidth: '340px', marginLeft: 'auto', marginRight: 'auto' }}>
             Your signature has been recorded and the contract is now legally
             complete.
           </p>
@@ -306,20 +307,20 @@ export default function SignPage({
   // ── Main form ────────────────────────────────────────────────────────────
   return (
     <main style={styles.page}>
-      {/* Glow blobs */}
-      <div style={styles.glowTop} />
-      <div style={styles.glowBottom} />
-
       <div style={styles.card}>
-        {/* Wordmark */}
+        {/* Logo */}
         <div style={styles.wordmark}>
-          <div style={styles.logoMark}>✦</div>
-          <span style={styles.logoText}>ContractAI</span>
+          <div style={styles.logoMark}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1L13 4V10L7 13L1 10V4L7 1Z" fill="white" />
+            </svg>
+          </div>
+          <span style={styles.logoText}>Clerra</span>
         </div>
 
         {/* Header */}
         <div style={styles.header}>
-          <div style={styles.badge('rgba(124,58,237,0.12)', 'rgba(124,58,237,0.35)', '#a78bfa')}>
+          <div style={styles.badge('rgba(255,92,40,0.08)', 'rgba(255,92,40,0.3)', '#FF5C28')}>
             Signature Required
           </div>
           <h1 style={styles.title}>{contract?.title || 'Review & Sign Contract'}</h1>
@@ -368,8 +369,7 @@ export default function SignPage({
                   width: '6px',
                   height: '6px',
                   borderRadius: '50%',
-                  background: '#7c3aed',
-                  boxShadow: '0 0 6px #7c3aed',
+                  background: '#FF5C28',
                   display: 'inline-block',
                 }} />
                 {contract.status}
@@ -448,7 +448,6 @@ export default function SignPage({
                 maxHeight: '60px',
                 display: 'block',
                 marginTop: '8px',
-                filter: 'brightness(2) hue-rotate(240deg)',
               }}
             />
           </div>
@@ -491,38 +490,12 @@ export default function SignPage({
 const styles: Record<string, any> = {
   page: {
     minHeight: '100vh',
-    background: '#060b18',
+    background: '#F7F5F2',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
     padding: '40px 20px 80px',
     position: 'relative',
-    overflow: 'hidden',
-  } as React.CSSProperties,
-
-  glowTop: {
-    position: 'fixed',
-    top: '-15%',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '900px',
-    height: '600px',
-    background:
-      'radial-gradient(ellipse at center, rgba(79,110,247,0.13) 0%, transparent 70%)',
-    pointerEvents: 'none',
-    zIndex: 0,
-  } as React.CSSProperties,
-
-  glowBottom: {
-    position: 'fixed',
-    bottom: '-20%',
-    right: '10%',
-    width: '500px',
-    height: '500px',
-    background:
-      'radial-gradient(ellipse at center, rgba(124,58,237,0.06) 0%, transparent 70%)',
-    pointerEvents: 'none',
-    zIndex: 0,
   } as React.CSSProperties,
 
   card: {
@@ -530,15 +503,11 @@ const styles: Record<string, any> = {
     zIndex: 1,
     width: '100%',
     maxWidth: '680px',
-    background: 'rgba(255,255,255,0.035)',
-    backdropFilter: 'blur(28px)',
-    WebkitBackdropFilter: 'blur(28px)',
+    background: '#FFFFFF',
     borderRadius: '24px',
-    border: '1px solid rgba(255,255,255,0.08)',
-    boxShadow:
-      '0 0 0 1px rgba(79,110,247,0.05), 0 28px 72px rgba(0,0,0,0.65), 0 8px 24px rgba(0,0,0,0.4)',
+    border: '1px solid #E2DED8',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)',
     padding: '40px 36px',
-    animation: 'fadeUp 0.5s ease both',
   } as React.CSSProperties,
 
   wordmark: {
@@ -552,19 +521,18 @@ const styles: Record<string, any> = {
     width: '28px',
     height: '28px',
     borderRadius: '8px',
-    background: 'linear-gradient(135deg, #4f6ef7, #7c3aed)',
+    background: '#FF5C28',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '13px',
-    boxShadow: '0 2px 12px rgba(79,110,247,0.45)',
+    boxShadow: '0 2px 8px rgba(255,92,40,0.35)',
   } as React.CSSProperties,
 
   logoText: {
-    fontSize: '15px',
+    fontSize: '16px',
     fontWeight: 700,
-    color: '#e2e8f0',
-    letterSpacing: '-0.01em',
+    color: '#111111',
+    letterSpacing: '-0.02em',
   } as React.CSSProperties,
 
   header: {
@@ -589,14 +557,14 @@ const styles: Record<string, any> = {
   title: {
     fontSize: '26px',
     fontWeight: 700,
-    color: '#f1f5f9',
+    color: '#111111',
     margin: '0 0 10px',
     letterSpacing: '-0.02em',
     lineHeight: 1.2,
   } as React.CSSProperties,
 
   text: {
-    color: '#475569',
+    color: '#8C8C8C',
     fontSize: '14px',
     lineHeight: 1.7,
     margin: 0,
@@ -604,7 +572,7 @@ const styles: Record<string, any> = {
 
   divider: {
     border: 'none',
-    borderTop: '1px solid rgba(255,255,255,0.06)',
+    borderTop: '1px solid #E2DED8',
     margin: '28px 0',
   } as React.CSSProperties,
 
@@ -624,7 +592,7 @@ const styles: Record<string, any> = {
   metaLabel: {
     fontSize: '10px',
     fontWeight: 700,
-    color: '#334155',
+    color: '#8C8C8C',
     textTransform: 'uppercase',
     letterSpacing: '0.08em',
   } as React.CSSProperties,
@@ -632,7 +600,7 @@ const styles: Record<string, any> = {
   metaValue: {
     fontSize: '14px',
     fontWeight: 500,
-    color: '#cbd5e1',
+    color: '#111111',
   } as React.CSSProperties,
 
   section: {
@@ -643,7 +611,7 @@ const styles: Record<string, any> = {
     display: 'block',
     fontSize: '13px',
     fontWeight: 600,
-    color: '#94a3b8',
+    color: '#8C8C8C',
     marginBottom: '10px',
     letterSpacing: '0.01em',
   } as React.CSSProperties,
@@ -651,14 +619,14 @@ const styles: Record<string, any> = {
   pdfContainer: {
     borderRadius: '12px',
     overflow: 'hidden',
-    border: '1px solid rgba(255,255,255,0.08)',
-    background: 'rgba(0,0,0,0.3)',
+    border: '1px solid #E2DED8',
+    background: '#F7F5F2',
   } as React.CSSProperties,
 
   pdfFrame: {
     display: 'block',
     width: '100%',
-    height: '480px',
+    height: '640px',
     border: 'none',
   } as React.CSSProperties,
 
@@ -668,7 +636,7 @@ const styles: Record<string, any> = {
     gap: '0',
     borderRadius: '12px',
     overflow: 'hidden',
-    border: '1px solid rgba(255,255,255,0.07)',
+    border: '1px solid #E2DED8',
   } as React.CSSProperties,
 
   fieldRow: {
@@ -677,14 +645,14 @@ const styles: Record<string, any> = {
     alignItems: 'flex-start',
     gap: '16px',
     padding: '12px 16px',
-    background: 'rgba(255,255,255,0.02)',
-    borderBottom: '1px solid rgba(255,255,255,0.04)',
+    background: '#FFFFFF',
+    borderBottom: '1px solid #F0EDE8',
   } as React.CSSProperties,
 
   fieldLabel: {
     fontSize: '12px',
     fontWeight: 600,
-    color: '#475569',
+    color: '#8C8C8C',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.06em',
     flexShrink: 0,
@@ -693,7 +661,7 @@ const styles: Record<string, any> = {
 
   fieldValue: {
     fontSize: '14px',
-    color: '#cbd5e1',
+    color: '#111111',
     textAlign: 'right' as const,
     lineHeight: 1.5,
     wordBreak: 'break-word' as const,
@@ -704,18 +672,18 @@ const styles: Record<string, any> = {
     padding: '13px 16px',
     fontSize: '15px',
     borderRadius: '12px',
-    border: '1.5px solid rgba(255,255,255,0.08)',
-    background: 'rgba(255,255,255,0.04)',
+    border: '1.5px solid #E2DED8',
+    background: '#FFFFFF',
     outline: 'none',
-    color: '#f1f5f9',
+    color: '#111111',
     boxSizing: 'border-box',
     fontFamily: 'inherit',
-    transition: 'border-color 0.15s, box-shadow 0.15s',
+    transition: 'border-color 0.15s',
   } as React.CSSProperties,
 
   hint: {
     fontSize: '12px',
-    color: '#334155',
+    color: '#8C8C8C',
     marginTop: '6px',
     lineHeight: 1.5,
   } as React.CSSProperties,
@@ -723,15 +691,15 @@ const styles: Record<string, any> = {
   sigPreview: {
     marginBottom: '20px',
     padding: '14px 16px',
-    background: 'rgba(79,110,247,0.06)',
+    background: '#FFF0EB',
     borderRadius: '12px',
-    border: '1px solid rgba(79,110,247,0.18)',
+    border: '1px solid rgba(255,92,40,0.2)',
   } as React.CSSProperties,
 
   errorBanner: {
-    background: 'rgba(239,68,68,0.08)',
-    border: '1px solid rgba(239,68,68,0.25)',
-    color: '#fca5a5',
+    background: 'rgba(239,68,68,0.06)',
+    border: '1px solid rgba(239,68,68,0.2)',
+    color: '#ef4444',
     borderRadius: '10px',
     padding: '12px 16px',
     fontSize: '13px',
@@ -743,14 +711,14 @@ const styles: Record<string, any> = {
     width: '100%',
     border: 'none',
     borderRadius: '14px',
-    background: 'linear-gradient(135deg, #4f6ef7, #7c3aed)',
+    background: '#FF5C28',
     color: '#ffffff',
     fontSize: '15px',
     fontWeight: 700,
     padding: '15px 20px',
     display: 'block',
     textAlign: 'center',
-    boxShadow: '0 4px 20px rgba(79,110,247,0.42)',
+    boxShadow: '0 4px 20px rgba(255,92,40,0.35)',
     marginBottom: '16px',
     letterSpacing: '0.01em',
     transition: 'opacity 0.15s, box-shadow 0.15s',
@@ -758,7 +726,7 @@ const styles: Record<string, any> = {
 
   legalNote: {
     fontSize: '11px',
-    color: '#1e293b',
+    color: '#8C8C8C',
     textAlign: 'center',
     lineHeight: 1.7,
     margin: 0,
@@ -767,8 +735,8 @@ const styles: Record<string, any> = {
   spinner: {
     width: '36px',
     height: '36px',
-    border: '3px solid rgba(79,110,247,0.15)',
-    borderTopColor: '#4f6ef7',
+    border: '3px solid rgba(255,92,40,0.15)',
+    borderTopColor: '#FF5C28',
     borderRadius: '50%',
     animation: 'spin 0.75s linear infinite',
     margin: '0 auto 20px',
@@ -777,7 +745,7 @@ const styles: Record<string, any> = {
   btnSpinner: {
     width: '16px',
     height: '16px',
-    border: '2px solid rgba(255,255,255,0.25)',
+    border: '2px solid rgba(255,255,255,0.35)',
     borderTopColor: '#fff',
     borderRadius: '50%',
     animation: 'spin 0.65s linear infinite',
@@ -788,13 +756,12 @@ const styles: Record<string, any> = {
   successIcon: {
     width: '72px',
     height: '72px',
-    background: 'rgba(74,222,128,0.1)',
-    border: '1px solid rgba(74,222,128,0.2)',
+    background: 'rgba(16,185,129,0.08)',
+    border: '1px solid rgba(16,185,129,0.2)',
     borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 auto 24px',
-    boxShadow: '0 0 32px rgba(74,222,128,0.12)',
   } as React.CSSProperties,
 };
