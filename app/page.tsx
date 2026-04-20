@@ -164,7 +164,9 @@ export default function Home() {
     <>
       {/* NAV */}
       <nav className="clerra-nav">
-        <a href="#" className="nav-logo">Clerra</a>
+        <a href="#" className="nav-logo">
+          <img src="/clerra-logo.png" alt="Clerra" style={{ height: 36, width: 'auto' }} />
+        </a>
         <ul className="nav-links-list">
           <li><a href="#how">How it works</a></li>
           <li><a href="#features">Features</a></li>
@@ -212,7 +214,7 @@ export default function Home() {
               <div className="app-shell">
                 <div className="app-sidebar">
                   <div className="sidebar-header">
-                    <div className="sidebar-logo">Clerra</div>
+                    <img src="/clerra-logo.png" alt="Clerra" style={{ height: 22, width: 'auto' }} />
                   </div>
                   <div className="sidebar-menu">
                     <div className="sidebar-item active">
@@ -567,36 +569,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="cta-wrap" id="cta">
-        <div className="cta-inner">
-          <p className="section-eyebrow reveal">Get early access</p>
-          <h2 className="cta-h reveal d1">Stop starting from<br />a <em>blank page.</em></h2>
-          <p className="cta-sub reveal d2">Join the waitlist. First 500 users get free unlimited contracts at launch.</p>
-          {!submitted ? (
-            <>
-              <div className={`cta-form reveal d3${emailError ? ' error' : ''}`}>
-                <input
-                  type="email"
-                  className="cta-input"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSignup()}
-                />
-                <button className="btn-accent" onClick={handleSignup}>Join waitlist</button>
-              </div>
-              <p className="cta-fine reveal d4">No credit card. No spam. Unsubscribe anytime.</p>
-            </>
-          ) : (
-            <p className="cta-success">✓ You&apos;re on the list! We&apos;ll be in touch soon.</p>
-          )}
-        </div>
-      </section>
 
       {/* FOOTER */}
       <footer className="clerra-footer">
-        <a href="#" className="footer-logo">Clerra</a>
+        <a href="#" className="footer-logo">
+          <img src="/clerra-logo.png" alt="Clerra" style={{ height: 32, width: 'auto' }} />
+        </a>
         <ul className="footer-links-list">
           <li><a href="#">Privacy</a></li>
           <li><a href="#">Terms</a></li>
