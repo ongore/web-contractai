@@ -1,26 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSerif = DM_Serif_Display({
+  variable: "--font-serif",
   subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["700", "800", "900"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "ContractAI — Sign & Manage Contracts",
-  description: "AI-powered contract management and e-signature platform",
+  title: "Clerra — From Screenshot to Signed Contract",
+  description: "Paste a message thread, drop a screenshot, upload an invoice. Clerra turns your real-world inputs into polished, ready-to-sign contracts — in seconds.",
 };
 
 export default function RootLayout({
@@ -29,13 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
-    >
-      <body className="flex flex-col">
-        {children}
-      </body>
+    <html lang="en" className={`${dmSerif.variable} ${plusJakarta.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }
