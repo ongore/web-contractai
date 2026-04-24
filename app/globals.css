@@ -117,13 +117,15 @@ nav.clerra-nav {
   max-width: var(--max);
   margin: 0 auto;
 }
-.hero h1 {
+.hero h1,
+.hero-outer .hero h1 {
   font-family: var(--serif);
   font-size: clamp(52px, 6.5vw, 88px);
   line-height: 1.03; letter-spacing: -3px;
-  color: var(--text);
+  color: #ffffff !important;
   margin-bottom: 24px;
   text-wrap: balance;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.18);
 }
 .hero h1 em { font-style: italic; color: var(--accent); }
 .hero-sub {

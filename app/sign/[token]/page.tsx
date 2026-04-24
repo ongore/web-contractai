@@ -378,17 +378,30 @@ export default function SignPage({
           )}
         </div>
 
-        {/* PDF Preview */}
+        {/* PDF Link */}
         {contract?.pdfUrl && (
           <div style={styles.section}>
             <div style={styles.sectionLabel}>Contract Document</div>
-            <div style={styles.pdfContainer}>
-              <iframe
-                src={contract.pdfUrl}
-                style={styles.pdfFrame}
-                title="Contract Document"
-              />
-            </div>
+            <a
+              href={contract.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={styles.pdfLink}
+            >
+              <div style={styles.pdfLinkIcon}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 18H17V16H7V18ZM7 14H17V12H7V14ZM6 22C5.45 22 4.979 21.804 4.587 21.413C4.196 21.021 4 20.55 4 20V4C4 3.45 4.196 2.979 4.587 2.587C4.979 2.196 5.45 2 6 2H14L20 8V20C20 20.55 19.804 21.021 19.413 21.413C19.021 21.804 18.55 22 18 22H6ZM13 9V4H6V20H18V9H13Z" fill="#FF5C28"/>
+                </svg>
+              </div>
+              <div style={styles.pdfLinkText}>
+                <span style={styles.pdfLinkTitle}>View Full Contract</span>
+                <span style={styles.pdfLinkSub}>Tap to open PDF document</span>
+              </div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+                <path d="M14 3V5H17.59L7.76 14.83L9.17 16.24L19 6.41V10H21V3H14Z" fill="#8C8C8C"/>
+                <path d="M19 19H5V5H12V3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V12H19V19Z" fill="#8C8C8C"/>
+              </svg>
+            </a>
           </div>
         )}
 
@@ -616,18 +629,47 @@ const styles: Record<string, any> = {
     letterSpacing: '0.01em',
   } as React.CSSProperties,
 
-  pdfContainer: {
+  pdfLink: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '14px',
+    padding: '16px 18px',
     borderRadius: '12px',
-    overflow: 'hidden',
     border: '1px solid #E2DED8',
-    background: '#F7F5F2',
+    background: '#FFFFFF',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    transition: 'border-color 0.15s, box-shadow 0.15s',
   } as React.CSSProperties,
 
-  pdfFrame: {
-    display: 'block',
-    width: '100%',
-    height: '640px',
-    border: 'none',
+  pdfLinkIcon: {
+    width: '44px',
+    height: '44px',
+    borderRadius: '10px',
+    background: '#FFF1EC',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  } as React.CSSProperties,
+
+  pdfLinkText: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px',
+    flex: 1,
+    minWidth: 0,
+  } as React.CSSProperties,
+
+  pdfLinkTitle: {
+    fontSize: '15px',
+    fontWeight: 600,
+    color: '#111111',
+  } as React.CSSProperties,
+
+  pdfLinkSub: {
+    fontSize: '13px',
+    color: '#8C8C8C',
   } as React.CSSProperties,
 
   fieldsList: {
